@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ThingSpeak Live Graph</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <h2>Live ThingSpeak Data (Channel 3023871)</h2>
+  <canvas id="myChart" width="800" height="400"></canvas>
+
+  <script>
+    const channelID = 3023871;
+    const fieldNumber = 1; // change if needed
+    const resultsCount = 20;
+    const refreshInterval = 15000; // 15 seconds
+    const readAPIKey = "MOBXUAXGXG554IBK";
+
+    const url = `https://api.thingspeak.com/channels/${channelID}/fields/${fieldNumber}.json?api_key=${readAPIKey}&results=${resultsCount}`;
+
+    let chart;
+
+    async function fetchData() {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const labels = data.feeds.map(entry =>
+          new Date(entry.created_at).toLocaleTimeString()
+        );
+
+        const values = data.feeds.map(entry =>
+          Number(entry[`field${fieldNumber}`])
+        );
+
+        updateChart(labels, values);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    function createChart(labels, values) {
+      const ctx = document.getElementById('myChart').getContext('2d');
+
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Field ' + fieldNumber,
+            data: values,
+            borderWidth: 2,
+            fill: false
+          }]
+        },
+        options: {
+          animation: false,
+          responsive: true
+        }
+      });
+    }
+
+    function updateChart(labels, values) {
+      if (!chart) {
+        createChart(labels, values);
+      } else {
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = values;
+        chart.update();
+      }
+    }
+
+    // Initial load
+    fetchData();
+
+    // Auto-refresh
+    setInterval(fetchData, refreshInterval);
+
+  </script>
+
+</body>
+</html>
