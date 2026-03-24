@@ -52,7 +52,7 @@
           }))
           .filter(entry => !isNaN(entry.value));
 
-        // Filter for last 4 days + today
+        // Filter for last 4 days
         const fiveDaysAgo = new Date();
         fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 4);
 
@@ -94,8 +94,8 @@
                 unit: 'day',
                 displayFormats: { day: 'MMM dd' }
               },
-              min: new Date(new Date().setDate(new Date().getDate() - 4)), // 4 days ago
-              max: new Date(new Date().setDate(new Date().getDate() + 1)), // tomorrow
+              min: new Date(new Date().setDate(new Date().getDate() - 4)),
+              max: new Date(new Date().setDate(new Date().getDate() + 1)),
               title: {
                 display: true,
                 text: 'Date',
@@ -160,32 +160,25 @@
               }
             },
             tooltip: {
-    enabled: true,
-    mode: 'nearest',
-    intersect: true,
-    displayColors: false,         // removes the small legend square
-    backgroundColor: 'rgba(0,0,0,0.8)',
-    titleFont: { size: 14, weight: 'bold' },
-    bodyFont: { size: 12 },
-    padding: 10,
-    cornerRadius: 6,
-    callbacks: {
-      label: function(context) {
-        const date = new Date(context.parsed.x);
-        const dateStr = date.toLocaleDateString();                     // e.g., Mar 24, 2026
-        const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // e.g., 14:30
-        const depth = context.parsed.y;
-
-        // Return array → each element is a separate line
-        return [
-          dateStr,
-          timeStr,
-          `${depth} cm`
-        ];
-      }
-    }
-  }
-}
+              enabled: true,
+              mode: 'nearest',
+              intersect: true,
+              displayColors: false, 
+              backgroundColor: 'rgba(0,0,0,0.8)',
+              titleFont: { size: 14, weight: 'bold' },
+              bodyFont: { size: 12 },
+              padding: 10,
+              cornerRadius: 6,
+              callbacks: {
+                label: function(context) {
+                  const date = new Date(context.parsed.x);
+                  const dateStr = date.toLocaleDateString();
+                  const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                  const depth = context.parsed.y;
+                  return [dateStr, timeStr, `${depth} cm`];
+                }
+              }
+            }
           }
         }
       });
