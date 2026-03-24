@@ -69,23 +69,29 @@
     }
   },
   plugins: {
-    annotation: {
-      annotations: {
-        thresholdLine: {
-          type: 'line',
-          yMin: 10,      // line starts at 10°C
-          yMax: 10,      // line ends at 10°C
-          borderColor: 'red',
-          borderWidth: 2,
-          label: {
-            content: 'Threshold 10°C',
-            enabled: true,
-            position: 'end'
+  annotation: {
+    annotations: {
+      thresholdLine: {
+        type: 'line',
+        yMin: 10,             // line value
+        yMax: 10,
+        borderColor: 'red',
+        borderWidth: 2,
+        label: {
+          content: 'Threshold 10°C', // text label
+          enabled: true,
+          position: 'end',           // 'start', 'center', 'end'
+          backgroundColor: 'rgba(255,0,0,0.5)',
+          color: 'white',
+          font: {
+            size: 12,
+            weight: 'bold'
           }
         }
       }
     }
   }
+}
 }
       });
     }
