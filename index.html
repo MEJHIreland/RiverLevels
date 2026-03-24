@@ -93,6 +93,8 @@
                   day: 'MMM dd'  // e.g., Mar 24
                 }
               },
+              min: new Date(new Date().setDate(new Date().getDate() - 4)), // 4 days ago
+              max: new Date(), // today
               ticks: {
                 autoSkip: true,
                 maxTicksLimit: 10
