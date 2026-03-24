@@ -160,23 +160,32 @@
               }
             },
             tooltip: {
-              displayColors: false,
-              enabled: true,
-              mode: 'nearest',
-              intersect: true,
-              backgroundColor: 'rgba(0,0,0,0.8)',
-              titleFont: { size: 14, weight: 'bold' },
-              bodyFont: { size: 12 },
-              padding: 10,
-              cornerRadius: 6,
-              callbacks: {
-                label: function(context) {
-                  const date = new Date(context.parsed.x);
-                  const depth = context.parsed.y;
-                  return `${depth} cm`;
-                }
-              }
-            }
+    enabled: true,
+    mode: 'nearest',
+    intersect: true,
+    displayColors: false,         // removes the small legend square
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    titleFont: { size: 14, weight: 'bold' },
+    bodyFont: { size: 12 },
+    padding: 10,
+    cornerRadius: 6,
+    callbacks: {
+      label: function(context) {
+        const date = new Date(context.parsed.x);
+        const dateStr = date.toLocaleDateString();                     // e.g., Mar 24, 2026
+        const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // e.g., 14:30
+        const depth = context.parsed.y;
+
+        // Return array → each element is a separate line
+        return [
+          dateStr,
+          timeStr,
+          `${depth} cm`
+        ];
+      }
+    }
+  }
+}
           }
         }
       });
