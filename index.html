@@ -2,17 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ThingSpeak Live Graph</title>
+  <title>ThingSpeak Live Temperature</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-  <h2>Live ThingSpeak Data (Channel 3023871)</h2>
-  <canvas id="myChart" width="1000" height="1000"></canvas>
+  <h2 style="text-align:center;">Live Temperature (°C)</h2>
+
+  <div style="width: 80%; height: 400px; margin: auto;">
+    <canvas id="myChart"></canvas>
+  </div>
 
   <script>
     const channelID = 3023871;
-    const fieldNumber = 1; // change if needed
+    const fieldNumber = 1;
     const resultsCount = 20;
     const refreshInterval = 15000; // 15 seconds
     const readAPIKey = "MOBXUAXGXG554IBK";
@@ -30,9 +33,9 @@
           new Date(entry.created_at).toLocaleTimeString()
         );
 
-        const values = data.feeds.map(entry =>
-          Number(entry[`field${fieldNumber}`])
-        );
+        const values = data.feeds
+          .map(entry => Number(entry[`field${fieldNumber}`]))
+          .filter(val => !isNaN(val));
 
         updateChart(labels, values);
       } catch (error) {
@@ -40,32 +43,35 @@
       }
     }
 
-function createChart(labels, values) {
-  const ctx = document.getElementById('myChart').getContext('2d');
+    function createChart(labels, values) {
+      const ctx = document.getElementById('myChart').getContext('2d');
 
-  chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Temperature (°C)',
-        data: values,
-        borderWidth: 2,
-        fill: false
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: {
-          min: 0,
-          max: 30
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Temperature (°C)',
+            data: values,
+            borderWidth: 2,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          scales: {
+            y: {
+              min: 0,
+              ticks: {
+                stepSize: 5
+              }
+            }
+          }
         }
-      }
+      });
     }
-  });
-}
 
     function updateChart(labels, values) {
       if (!chart) {
@@ -73,6 +79,11 @@ function createChart(labels, values) {
       } else {
         chart.data.labels = labels;
         chart.data.datasets[0].data = values;
+
+        // Dynamically adjust max to prevent zooming
+        const maxValue = Math.max(...values);
+        chart.options.scales.y.suggestedMax = maxValue + 5;
+
         chart.update();
       }
     }
@@ -80,7 +91,7 @@ function createChart(labels, values) {
     // Initial load
     fetchData();
 
-    // Auto-refresh
+    // Auto-refresh every 15 seconds
     setInterval(fetchData, refreshInterval);
 
   </script>
