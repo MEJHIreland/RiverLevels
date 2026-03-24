@@ -76,6 +76,24 @@
         type: 'line',          // horizontal line
         yMin: 10,
         yMax: 10,
+        borderColor: 'orange',
+        borderWidth: 2,
+        label: {
+          enabled: true,        // must be true
+          content: 'Threshold 10°C', // text for the line
+          position: 'end',      // 'start', 'center', 'end'
+          backgroundColor: 'rgba(0,0,0,1)',
+          color: 'white',
+          font: {
+            size: 12,
+            weight: 'bold'
+          }
+        }
+      }
+      thresholdLine: {
+        type: 'line',          // horizontal line
+        yMin: 20,
+        yMax: 20,
         borderColor: 'red',
         borderWidth: 2,
         label: {
