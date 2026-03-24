@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>Upper Liffey Levels</title>
+
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <!-- Annotation plugin -->
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.1"></script>
 </head>
@@ -17,32 +19,51 @@
   </div>
 
   <div style="width: 90%; margin: auto; text-align: center; margin-top: 10px;">
-  <p><i>Data shown is for informative purposes and provided in good faith. Always check conditions before paddling. </i></p>
+    <p><i>Data shown is for informative purposes and provided in good faith. Always check conditions before paddling.</i></p>
   </div>
 
   <script>
     const channelID = 3023871;
     const fieldNumber = 1;
-    const resultsCount = 2000; // number of points to fetch (~5 days)
-    const refreshInterval = 15000; // 15 seconds
+    const resultsCount = 2000;
+    const refreshInterval = 15000;
     const readAPIKey = "MOBXUAXGXG554IBK";
 
     const url = `https://api.thingspeak.com/channels/${channelID}/fields/${fieldNumber}.json?api_key=${readAPIKey}&results=${resultsCount}`;
 
     let chart;
 
+    // ✅ Register annotation plugin (required)
+    Chart.register(window['chartjs-plugin-annotation']);
+
     async function fetchData() {
       try {
         const response = await fetch(url);
         const data = await response.json();
 
-        
-        // Extract numerical values
-        const values = data.feeds
-          .map(entry => Number(entry[`field${fieldNumber}`]))
-          .filter(val => !isNaN(val));
+        // ✅ Keep labels + values aligned
+        const filtered = data.feeds
+          .map(entry => ({
+            value: Number(entry[`field${fieldNumber}`]),
+            date: new Date(entry.created_at)
+          }))
+          .filter(entry => !isNaN(entry.value));
+
+        const labels = filtered.map(entry => {
+          const date = entry.date;
+          if (date.getHours() === 0 && date.getMinutes() === 0) {
+            return date.toLocaleDateString();
+          }
+          if (date.getMinutes() === 0) {
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          }
+          return '';
+        });
+
+        const values = filtered.map(entry => entry.value);
 
         updateChart(labels, values);
+
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -53,14 +74,17 @@
 
       chart = new Chart(ctx, {
         type: 'line',
-        data: {labels: labels,
-               datasets: [{label: '(Date)', data: values,
-                           label: '(Time)', data: values,
-                           label: '(Depth)', data: values,
-                           borderColor: 'blue',
-                           borderWidth: 2,
-                           fill: false}]
-              },
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Depth',
+            data: values,
+            borderColor: 'blue',
+            borderWidth: 2,
+            fill: false,
+            tension: 0.2
+          }]
+        },
         options: {
           responsive: true,
           maintainAspectRatio: false,
@@ -75,49 +99,40 @@
           plugins: {
             annotation: {
               annotations: {
-                thresholdLine1: {      // first threshold
+                thresholdLine1: {
                   type: 'line',
                   yMin: 10,
                   yMax: 10,
                   borderColor: 'green',
                   borderWidth: 2,
                   label: {
-                    enabled: true,
-                    content: 'Threshold 10°C',
-                    position: 'end',
-                    backgroundColor: 'rgba(0,0,0,0.7)',
-                    color: 'white',
-                    font: { size: 12, weight: 'bold' }
+                    display: true,
+                    content: '10°C',
+                    position: 'end'
                   }
                 },
-                thresholdLine2: {      // second threshold
+                thresholdLine2: {
                   type: 'line',
                   yMin: 17,
                   yMax: 17,
                   borderColor: 'orange',
                   borderWidth: 2,
                   label: {
-                    enabled: true,
-                    content: 'Threshold 20°C',
-                    position: 'end',
-                    backgroundColor: 'rgba(0,0,0,0.7)',
-                    color: 'white',
-                    font: { size: 12, weight: 'bold' }
+                    display: true,
+                    content: '17°C',
+                    position: 'end'
                   }
                 },
-                thresholdLine3: {      // third threshold
+                thresholdLine3: {
                   type: 'line',
                   yMin: 23,
                   yMax: 23,
                   borderColor: 'red',
                   borderWidth: 2,
                   label: {
-                    enabled: true,
-                    content: 'Threshold 30°C',
-                    position: 'end',
-                    backgroundColor: 'rgba(0,0,0,0.7)',
-                    color: 'white',
-                    font: { size: 12, weight: 'bold' }
+                    display: true,
+                    content: '23°C',
+                    position: 'end'
                   }
                 }
               }
