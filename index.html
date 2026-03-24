@@ -69,19 +69,19 @@
       max: 30
     }
   },
-  plugins: {
+ plugins: {
   annotation: {
     annotations: {
       thresholdLine: {
-        type: 'line',
-        yMin: 10,             // line value
+        type: 'line',          // horizontal line
+        yMin: 10,
         yMax: 10,
         borderColor: 'red',
         borderWidth: 2,
         label: {
-          content: 'Threshold 10°C', // text label
-          enabled: true,
-          position: 'end',           // 'start', 'center', 'end'
+          enabled: true,        // must be true
+          content: 'Threshold 10°C', // text for the line
+          position: 'end',      // 'start', 'center', 'end'
           backgroundColor: 'rgba(255,0,0,0.5)',
           color: 'white',
           font: {
