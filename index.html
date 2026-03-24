@@ -3,21 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <title>ThingSpeak Live Temperature</title>
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Annotation plugin -->
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.1"></script>
 </head>
 <body>
 
   <h2 style="text-align:center;">Upper Liffey Level (m)</h2>
 
-  <div style="width: 80%; height: 400px; margin: auto;">
+  <div style="width: 90%; height: 400px; margin: auto;">
     <canvas id="myChart"></canvas>
   </div>
 
   <script>
     const channelID = 3023871;
     const fieldNumber = 1;
-    const resultsCount = 2000;
+    const resultsCount = 2000; // number of points to fetch (~5 days)
     const refreshInterval = 15000; // 15 seconds
     const readAPIKey = "MOBXUAXGXG554IBK";
 
@@ -30,11 +32,19 @@
         const response = await fetch(url);
         const data = await response.json();
 
-       const labels = data.feeds.map(entry => {
-      const date = new Date(entry.created_at);
-      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-      });
+        // Prepare labels: first entry of day = date, every hour = time
+        const labels = data.feeds.map(entry => {
+          const date = new Date(entry.created_at);
+          if (date.getHours() === 0 && date.getMinutes() === 0) {
+            return date.toLocaleDateString();
+          }
+          if (date.getMinutes() === 0) {
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          }
+          return '';
+        });
 
+        // Extract numerical values
         const values = data.feeds
           .map(entry => Number(entry[`field${fieldNumber}`]))
           .filter(val => !isNaN(val));
@@ -55,63 +65,59 @@
           datasets: [{
             label: '(meters)',
             data: values,
+            borderColor: 'blue',
             borderWidth: 2,
             fill: false
           }]
         },
         options: {
-  responsive: true,
-  maintainAspectRatio: false,
-  animation: false,
-  scales: {
-    y: {
-      min: 0,
-      max: 30
-    }
-  },
- plugins: {
-  annotation: {
-    annotations: {
-      thresholdLine: {
-        type: 'line',          // horizontal line
-        yMin: 10,
-        yMax: 10,
-        borderColor: 'orange',
-        borderWidth: 2,
-        label: {
-          enabled: true,        // must be true
-          content: 'Threshold 10°C', // text for the line
-          position: 'end',      // 'start', 'center', 'end'
-          backgroundColor: 'rgba(0,0,0,1)',
-          color: 'white',
-          font: {
-            size: 12,
-            weight: 'bold'
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          scales: {
+            y: {
+              min: 0,
+              max: 30,
+              ticks: { stepSize: 5 }
+            }
+          },
+          plugins: {
+            annotation: {
+              annotations: {
+                thresholdLine1: {      // first threshold
+                  type: 'line',
+                  yMin: 10,
+                  yMax: 10,
+                  borderColor: 'orange',
+                  borderWidth: 2,
+                  label: {
+                    enabled: true,
+                    content: 'Threshold 10°C',
+                    position: 'end',
+                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    color: 'white',
+                    font: { size: 12, weight: 'bold' }
+                  }
+                },
+                thresholdLine2: {      // second threshold
+                  type: 'line',
+                  yMin: 20,
+                  yMax: 20,
+                  borderColor: 'red',
+                  borderWidth: 2,
+                  label: {
+                    enabled: true,
+                    content: 'Threshold 20°C',
+                    position: 'end',
+                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    color: 'white',
+                    font: { size: 12, weight: 'bold' }
+                  }
+                }
+              }
+            }
           }
         }
-      }
-      thresholdLine: {
-        type: 'line',          // horizontal line
-        yMin: 20,
-        yMax: 20,
-        borderColor: 'red',
-        borderWidth: 2,
-        label: {
-          enabled: true,        // must be true
-          content: 'Threshold 10°C', // text for the line
-          position: 'end',      // 'start', 'center', 'end'
-          backgroundColor: 'rgba(0,0,0,1)',
-          color: 'white',
-          font: {
-            size: 12,
-            weight: 'bold'
-          }
-        }
-      }
-    }
-  }
-}
-}
       });
     }
 
@@ -128,9 +134,8 @@
     // Initial load
     fetchData();
 
-    // Auto-refresh every 15 seconds
+    // Auto-refresh
     setInterval(fetchData, refreshInterval);
-
   </script>
 
 </body>
