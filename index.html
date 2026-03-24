@@ -175,7 +175,9 @@
                   const dateStr = date.toLocaleDateString();
                   const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                   const depth = context.parsed.y;
-                  return [dateStr, timeStr, `${depth} cm`];
+                  return [
+                   // dateStr, timeStr,
+                    `${depth} cm`];
                 }
               }
             }
