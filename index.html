@@ -36,18 +36,7 @@
         const response = await fetch(url);
         const data = await response.json();
 
-        // Prepare labels: first entry of day = date, every hour = time
-        const labels = data.feeds.map(entry => {
-          const date = new Date(entry.created_at);
-          if (date.getHours() === 0 && date.getMinutes() === 0) {
-            return date.toLocaleDateString();
-          }
-          if (date.getMinutes() === 0) {
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          }
-          return '';
-        });
-
+        
         // Extract numerical values
         const values = data.feeds
           .map(entry => Number(entry[`field${fieldNumber}`]))
