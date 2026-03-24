@@ -65,7 +65,12 @@
       chart = new Chart(ctx, {
         type: 'line',
         data: {labels: labels,
-               datasets: [{label: '(date)', data: values, label: '(time)', data: values, label: '(meters)', data: values, borderColor: 'blue', borderWidth: 2, fill: false}]
+               datasets: [{label: '(Date)', data: date,
+                           label: '(Time)', data: time,
+                           label: '(Depth)', data: values,
+                           borderColor: 'blue',
+                           borderWidth: 2,
+                           fill: false}]
               },
         options: {
           responsive: true,
