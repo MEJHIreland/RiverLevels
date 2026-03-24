@@ -86,7 +86,7 @@
           animation: false,
           scales: {
             x: {
-              display: true,
+              
               type: 'time',
               time: {
                 unit: 'day',
@@ -96,6 +96,13 @@
               },
               min: new Date(new Date().setDate(new Date().getDate() - 4)), // 4 days ago
               max: new Date(new Date().setDate(new Date().getDate() + 1)), // include tomorrow even if black
+
+              title: {
+              display: true,
+              text: 'Date',
+              font: { size: 14, weight: 'bold' }
+              },
+              
               ticks: {
                 autoSkip: true,
                 maxTicksLimit: 10
@@ -104,6 +111,11 @@
             y: {
               min: 0,
               max: 30,
+              title: {
+              display: true,
+              text: 'Depth (cm)',
+              font: { size: 14, weight: 'bold' }
+              },
               ticks: { stepSize: 5 }
             }
           },
