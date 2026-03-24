@@ -54,10 +54,15 @@
             fill: false
           }]
         },
-        options: {
-          animation: false,
-          responsive: true
-        }
+       options: {
+  responsive: true,
+  maintainAspectRatio: false,
+  scales: {
+    y: {
+      beginAtZero: true
+    }
+  }
+}
       });
     }
 
