@@ -64,9 +64,7 @@
           scales: {
             y: {
               min: 0,
-              ticks: {
-                stepSize: 5
-              }
+              max: 30   // 🔒 FIXED RANGE (no rescaling)
             }
           }
         }
@@ -79,11 +77,6 @@
       } else {
         chart.data.labels = labels;
         chart.data.datasets[0].data = values;
-
-        // Dynamically adjust max to prevent zooming
-        const maxValue = Math.max(...values);
-        chart.options.scales.y.suggestedMax = maxValue + 5;
-
         chart.update();
       }
     }
