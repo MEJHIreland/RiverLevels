@@ -92,7 +92,7 @@
                   type: 'line',
                   yMin: 10,
                   yMax: 10,
-                  borderColor: 'orange',
+                  borderColor: 'green',
                   borderWidth: 2,
                   label: {
                     enabled: true,
@@ -107,11 +107,26 @@
                   type: 'line',
                   yMin: 20,
                   yMax: 20,
-                  borderColor: 'red',
+                  borderColor: 'orange',
                   borderWidth: 2,
                   label: {
                     enabled: true,
                     content: 'Threshold 20°C',
+                    position: 'end',
+                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    color: 'white',
+                    font: { size: 12, weight: 'bold' }
+                  }
+                },
+                thresholdLine3: {      // third threshold
+                  type: 'line',
+                  yMin: 30,
+                  yMax: 30,
+                  borderColor: 'red',
+                  borderWidth: 2,
+                  label: {
+                    enabled: true,
+                    content: 'Threshold 30°C',
                     position: 'end',
                     backgroundColor: 'rgba(0,0,0,0.7)',
                     color: 'white',
