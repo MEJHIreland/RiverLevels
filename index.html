@@ -94,7 +94,7 @@
                 }
               },
               min: new Date(new Date().setDate(new Date().getDate() - 4)), // 4 days ago
-              max: new Date(), // today
+              max: new Date(new Date().setDate(new Date().getDate() + 1)), // include tomorrow even if black
               ticks: {
                 autoSkip: true,
                 maxTicksLimit: 10
