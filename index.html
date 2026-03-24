@@ -159,6 +159,24 @@
                   }
                 }
               }
+              tooltip: {
+    enabled: true,
+    mode: 'nearest',
+    intersect: true,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    titleFont: { size: 14, weight: 'bold' },
+    bodyFont: { size: 12 },
+    padding: 10,
+    cornerRadius: 6,
+    callbacks: {
+      label: function(context) {
+        let date = new Date(context.parsed.x);
+        let depth = context.parsed.y;
+        return `${date.toLocaleDateString()} → ${depth} cm`;
+      }
+    }
+  }
+}
             }
           }
         }
