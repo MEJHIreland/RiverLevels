@@ -40,34 +40,32 @@
       }
     }
 
-    function createChart(labels, values) {
-      const ctx = document.getElementById('myChart').getContext('2d');
+function createChart(labels, values) {
+  const ctx = document.getElementById('myChart').getContext('2d');
 
-      chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Field ' + fieldNumber,
-            data: values,
-            borderWidth: 2,
-            fill: false
-          }]
-        },
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Temperature (°C)',
+        data: values,
+        borderWidth: 2,
+        fill: false
+      }]
+    },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
-      y: {
-      min: 0,
-      max: 30   // adjust to your expected range
+        y: {
+          min: 0,
+          max: 30
+        }
+      }
     }
-  }
+  });
 }
-  }
-}
-      });
-    }
 
     function updateChart(labels, values) {
       if (!chart) {
