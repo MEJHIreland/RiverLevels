@@ -30,22 +30,10 @@
         const response = await fetch(url);
         const data = await response.json();
 
-       const labels = data.feeds.map((entry, i) => {
-        const date = new Date(entry.created_at);
-
-        // Check if this is the first entry of the day
-        if (date.getHours() === 0 && date.getMinutes() === 0) {
-        return date.toLocaleDateString(); // show full date
-        }
-
-        // For every hour
-        if (date.getMinutes() === 0) {
-         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // e.g., "01:00"
-        }
-
-  // Otherwise, no label
-  return '';
-});
+       const labels = data.feeds.map(entry => {
+      const date = new Date(entry.created_at);
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+      });
 
         const values = data.feeds
           .map(entry => Number(entry[`field${fieldNumber}`]))
