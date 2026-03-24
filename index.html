@@ -9,6 +9,9 @@
 
   <!-- Annotation plugin -->
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.1"></script>
+
+  <!-- Date adapter for time scale -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 </head>
 <body>
 
@@ -33,7 +36,7 @@
 
     let chart;
 
-    // ✅ Register annotation plugin (required)
+    // Register annotation plugin
     Chart.register(window['chartjs-plugin-annotation']);
 
     async function fetchData() {
@@ -41,7 +44,7 @@
         const response = await fetch(url);
         const data = await response.json();
 
-        // ✅ Keep labels + values aligned
+        // Map data to x (date) / y (value)
         const filtered = data.feeds
           .map(entry => ({
             value: Number(entry[`field${fieldNumber}`]),
@@ -49,40 +52,32 @@
           }))
           .filter(entry => !isNaN(entry.value));
 
-        const labels = filtered.map(entry => {
-          const date = entry.date;
-          if (date.getHours() === 0 && date.getMinutes() === 0) {
-            return date.toLocaleDateString();
-          }
-          if (date.getMinutes() === 0) {
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          }
-          return '';
-        });
+        const values = filtered.map(entry => ({
+          x: entry.date,
+          y: entry.value
+        }));
 
-        const values = filtered.map(entry => entry.value);
-
-        updateChart(labels, values);
+        updateChart(values);
 
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
 
-    function createChart(labels, values) {
+    function createChart(values) {
       const ctx = document.getElementById('myChart').getContext('2d');
 
       chart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: labels,
           datasets: [{
             label: 'Depth',
             data: values,
             borderColor: 'blue',
             borderWidth: 2,
             fill: false,
-            tension: 0.2
+            tension: 0.2,
+            parsing: false  // important for time scale
           }]
         },
         options: {
@@ -90,6 +85,19 @@
           maintainAspectRatio: false,
           animation: false,
           scales: {
+            x: {
+              type: 'time',
+              time: {
+                unit: 'day',
+                displayFormats: {
+                  day: 'MMM dd'  // e.g., Mar 24
+                }
+              },
+              ticks: {
+                autoSkip: true,
+                maxTicksLimit: 10
+              }
+            },
             y: {
               min: 0,
               max: 30,
@@ -107,7 +115,7 @@
                   borderWidth: 2,
                   label: {
                     display: true,
-                    content: 'Low',
+                    content: '10°C',
                     position: 'start'
                   }
                 },
@@ -119,7 +127,7 @@
                   borderWidth: 2,
                   label: {
                     display: true,
-                    content: 'Medium',
+                    content: '17°C',
                     position: 'start'
                   }
                 },
@@ -131,7 +139,7 @@
                   borderWidth: 2,
                   label: {
                     display: true,
-                    content: 'High',
+                    content: '23°C',
                     position: 'start'
                   }
                 }
@@ -142,11 +150,10 @@
       });
     }
 
-    function updateChart(labels, values) {
+    function updateChart(values) {
       if (!chart) {
-        createChart(labels, values);
+        createChart(values);
       } else {
-        chart.data.labels = labels;
         chart.data.datasets[0].data = values;
         chart.update();
       }
