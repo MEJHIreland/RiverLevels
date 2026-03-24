@@ -170,6 +170,9 @@
               padding: 10,
               cornerRadius: 6,
               callbacks: {
+                title: function() {
+                return '';  // removes the title completely
+                },
                 label: function(context) {
                   const date = new Date(context.parsed.x);
                   const dateStr = date.toLocaleDateString();
