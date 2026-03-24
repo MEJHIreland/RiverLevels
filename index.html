@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>ThingSpeak Live Temperature</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.1"></script>
 </head>
 <body>
 
@@ -58,16 +59,34 @@
           }]
         },
         options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          animation: false,
-          scales: {
-            y: {
-              min: 0,
-              max: 30   // 🔒 FIXED RANGE (no rescaling)
-            }
+  responsive: true,
+  maintainAspectRatio: false,
+  animation: false,
+  scales: {
+    y: {
+      min: 0,
+      max: 30
+    }
+  },
+  plugins: {
+    annotation: {
+      annotations: {
+        thresholdLine: {
+          type: 'line',
+          yMin: 10,      // line starts at 10°C
+          yMax: 10,      // line ends at 10°C
+          borderColor: 'red',
+          borderWidth: 2,
+          label: {
+            content: 'Threshold 10°C',
+            enabled: true,
+            position: 'end'
           }
         }
+      }
+    }
+  }
+}
       });
     }
 
