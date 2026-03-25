@@ -54,19 +54,19 @@
           .filter(entry => !isNaN(entry.value));
 
           if (filtered.length > 0) {
-      const lastEntry = filtered[filtered.length - 1];
-      const lastDate = lastEntry.date;
+            const lastEntry = filtered[filtered.length - 1];
+            const lastDate = lastEntry.date;
+            const depth = lastEntry.value;
 
-      const dateStr = lastDate.toLocaleDateString();
-      const timeStr = lastDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const dateStr = lastDate.toLocaleDateString();
+            const timeStr = lastDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      // ✅ NEW: calculate time difference
-      const now = new Date();
-      const diffMinutes = Math.floor((now - lastDate) / 60000);
+            const now = new Date();
+            const diffMinutes = Math.floor((now - lastDate) / 60000);
 
-    document.getElementById('lastUpdated').innerText =
-    `Last reading: ${dateStr} at ${timeStr} (${diffMinutes} min ago)`;
-    }
+            document.getElementById('lastUpdated').innerText =
+            `Depth: ${depth} cm. Last updated at ${timeStr} on ${dateStr} which was (${diffMinutes} min ago).`;
+        }
         
         // Filter for last 4 days
         const fiveDaysAgo = new Date();
