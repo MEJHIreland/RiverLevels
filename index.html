@@ -22,7 +22,8 @@
   </div>
 
   <div style="width: 90%; margin: auto; text-align: center; margin-top: 10px;">
-    <p><i>Data shown is for informative purposes, always check conditions before working around or in a water source. Use common sence! </i></p>
+    <p><i>Data shown is for informative purposes, always check conditions before working around or in a water source. Use common sence!</i></p>
+    <p id="lastUpdated" style="margin-top:5px; font-size: 14px;"></p>
   </div>
 
   <script>
@@ -52,6 +53,18 @@
           }))
           .filter(entry => !isNaN(entry.value));
 
+          // ✅ NEW: update last updated text
+          if (filtered.length > 0) {
+          const lastEntry = filtered[filtered.length - 1];
+          const lastDate = lastEntry.date;
+
+          const dateStr = lastDate.toLocaleDateString();
+          const timeStr = lastDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+          document.getElementById('lastUpdated').innerText =
+          `Last updated: ${dateStr} at ${timeStr}`;
+        }
+        
         // Filter for last 4 days
         const fiveDaysAgo = new Date();
         fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 4);
